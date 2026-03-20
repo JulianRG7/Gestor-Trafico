@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    
+    <vType id="EgoCar" length="4.81" guiShape="passenger" width="2.16" color="white"/>
+    
+    <vTypeDistribution id="mezcla_urbana">
+        <vType id="auto" probability="0.6" length="5.00" minGap="2.50" maxSpeed="13.89" guiShape="passenger" accel="2.6" decel="4.5" sigma="0.5"/>
+        <vType id="bomberos" probability="0.01" maxSpeed="30.00" vClass="emergency" guiShape="firebrigade" color="red" accel="2.0" decel="6"/>
+        <vType id="camion_carga" probability="0.05" length="15.00" maxSpeed="25.00" vClass="truck" guiShape="truck" color="grey" accel="0.8" decel="3"/>
+        <vType id="moto" probability="0.15" length="2.00" maxSpeed="35.00" vClass="motorcycle" guiShape="motorcycle" width="0.80" color="orange" accel="5.0" decel="10"/>
+        <vType id="patrulla" probability="0.05" maxSpeed="40.00" vClass="emergency" guiShape="emergency" color="white" accel="3.5" decel="8"/>
+        <vType id="transporte_publico" probability="0.29" length="12.00" maxSpeed="22.00" vClass="bus" guiShape="bus" color="yellow" accel="1.2" decel="4"/>
+    </vTypeDistribution>
+
+    <route id="r_E0_E1" edges="E0 E1"/>
+    <route id="r_E0_E2" edges="E0 E2"/>
+    <route id="r_E1_E2" edges="-E1 E2"/>
+    <route id="r_E1_E4" edges="-E1 E4"/>
+    <route id="r_E1_E6" edges="-E1 E6"/>
+    <route id="r_E3_E4" edges="E3 E4"/>
+    <route id="r_E3_E6" edges="E3 E6"/>
+    <route id="r_E5_E6" edges="E5 E6"/>
+    <route id="r_E5_E2" edges="E5 E2"/>
+<!-- 
+    <trip id="f_0.0" type="EgoCar" depart="0.00" departLane="1" from="E0" to="E2"/> -->
+    <trip id="f_0.0" type="EgoCar" depart="0.00" departLane="1" departPos="base" from="E0" to="E2"/>
+    <flow id="f_E0_E2" type="mezcla_urbana" begin="0" end="3600" number="200" route="r_E0_E2" departLane="random"/>
+    <flow id="f_E1_E4" type="mezcla_urbana" begin="0" end="3600" number="150" route="r_E1_E4" departLane="1"/>
+    <flow id="f_E3_E6" type="mezcla_urbana" begin="0" end="3600" number="200" route="r_E3_E6" departLane="random"/>
+    <flow id="f_E5_E2" type="mezcla_urbana" begin="0" end="3600" number="100" route="r_E5_E2" departLane="1"/>
+</routes>

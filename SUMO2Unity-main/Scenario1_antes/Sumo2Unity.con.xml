@@ -1,0 +1,23 @@
+<connections>
+    <connection from="sur_a_centro" to="centro_a_norte" fromLane="0" toLane="0"/> 
+    <connection from="sur_a_centro" to="centro_a_norte" fromLane="1" toLane="1"/>
+    <connection from="sur_a_centro" to="centro_a_este"  fromLane="0" toLane="0"/> 
+    <connection from="sur_a_centro" to="centro_a_oeste" fromLane="1" toLane="1"/>
+    
+
+    <connection from="norte_a_centro" to="centro_a_sur"   fromLane="0" toLane="0"/>
+    <connection from="norte_a_centro" to="centro_a_sur"   fromLane="1" toLane="1"/>
+    <connection from="norte_a_centro" to="centro_a_oeste" fromLane="0" toLane="0"/> 
+    <connection from="norte_a_centro" to="centro_a_este"  fromLane="1" toLane="1"/> 
+
+
+    <connection from="este_a_centro" to="centro_a_oeste" fromLane="0" toLane="0"/> 
+    <connection from="este_a_centro" to="centro_a_oeste" fromLane="1" toLane="1"/> 
+    <connection from="este_a_centro" to="centro_a_norte"  fromLane="0" toLane="0"/>
+    <connection from="este_a_centro" to="centro_a_sur"   fromLane="1" toLane="1"/> 
+
+    <connection from="oeste_a_centro" to="centro_a_este" fromLane="0" toLane="0"/> 
+    <connection from="oeste_a_centro" to="centro_a_este" fromLane="1" toLane="1"/> 
+    <connection from="oeste_a_centro" to="centro_a_norte"  fromLane="0" toLane="0"/>
+    <connection from="oeste_a_centro" to="centro_a_sur"   fromLane="1" toLane="1"/> 
+</connections>

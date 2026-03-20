@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-03-16 22:03:42 by Eclipse SUMO netedit Version 1.19.0
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <!-- Shapes -->
+    <poly id="po_0" type="Terrain" color="green" fill="0" layer="0.00" shape="36.253000,156.054574 39.188371,18.930793 46.317131,20.188809 44.639776,159.409284 36.253000,156.054574"/>
+    <poly id="po_1" type="Terrain" color="green" fill="0" layer="0.00" shape="53.865229,16.414760 196.859753,16.414760 197.279092,5.092613 53.865229,8.866662 53.445890,15.995421"/>
+    <poly id="po_2" type="Terrain" color="green" fill="0" layer="0.00" shape="45.478453,0.060547 38.769033,-0.778130 40.865726,-142.095299 46.317131,-141.675960 46.317131,1.737903 39.188371,-0.778130"/>
+    <poly id="po_3" type="Terrain" color="green" fill="0" layer="0.00" shape="39.554340,158.222787 43.757844,158.546134 44.331417,17.714043 39.866298,17.714043 39.308158,158.365302"/>
+    <poly id="po_4" type="Terrain" color="green" fill="0" layer="0.00" shape="56.734802,19.256303 196.606416,18.825929 196.176042,4.623580 56.949989,4.193206 57.380363,19.471490"/>
+    <poly id="po_5" type="Terrain" color="green" fill="0" layer="0.00" shape="31.028076,158.257989 31.658187,23.729320 53.081957,23.414264 51.821735,158.888100 30.713021,157.942934"/>
+    <poly id="po_6" type="Terrain" color="green" fill="0" layer="0.00" shape="53.513754,-0.088156 54.697283,-142.111641 35.524112,-141.874936 34.577289,-0.088156 53.750460,-0.561567"/>
+    <poly id="po_7" type="Resitential" color="grey" fill="0" layer="0.00" shape="27.233761,157.316395 28.879013,19.663592 -123.032646,16.921504 -123.032646,157.316395 207.663133,159.510065 207.114715,-142.668001 -132.355745,-145.410089 -122.484229,17.469921"/>
+</additional>
