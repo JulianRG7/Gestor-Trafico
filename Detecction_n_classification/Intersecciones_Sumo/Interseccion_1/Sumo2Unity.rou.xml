@@ -1,0 +1,60 @@
+<routes>
+    <vTypeDistribution id="mezcla">
+        
+        <vType id="auto" accel="2.6" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="13.89" 
+               guiShape="passenger" probability="0.70"/>
+        
+        <vType id="transporte_publico" accel="1.2" decel="4" length="12" maxSpeed="22" 
+               guiShape="bus" vClass="bus" color="yellow" probability="0.1"/> 
+        
+        <vType id="camion_carga" accel="0.8" decel="3" length="15" maxSpeed="25" 
+               guiShape="truck" vClass="truck" color="gray" probability="0.04"/> 
+        
+        <vType id="ambulancia" accel="3.5" decel="8" maxSpeed="40" guiShape="emergency" 
+               vClass="emergency" color="white" icon="ambulance" probability="0.02"/> 
+        <vType id="bomberos" accel="2.0" decel="6" maxSpeed="30" guiShape="firebrigade" 
+               vClass="emergency" color="red" probability="0.03"/> 
+        <vType id="patrulla" accel="4.0" decel="9" maxSpeed="45" guiShape="police" 
+               vClass="authority" color="blue" probability="0.03"/> 
+        
+        <vType id="moto" accel="5.0" decel="10" length="2" width="0.8" maxSpeed="35" 
+               guiShape="motorcycle" vClass="motorcycle" color="orange" probability="0.08"/> 
+    </vTypeDistribution>
+
+    <!-- Flujo desde el sur -->
+    <route id="sur_ruta_derecha" edges="sur_a_centro centro_a_este"/>
+    <route id="sur_ruta_izquierda" edges="sur_a_centro centro_a_oeste"/>
+    <route id="sur_ruta_central" edges="sur_a_centro centro_a_norte"/>
+
+    <flow id="sur_flujo_derecha" type="mezcla" route="sur_ruta_derecha" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="sur_flujo_izquierda" type="mezcla" route="sur_ruta_izquierda" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="sur_flujo_central" type="mezcla" route="sur_ruta_central" begin="0" end="3600" number="150" departLane="random"/>
+
+    <!-- Flujo desde el norte -->
+    <route id="norte_ruta_derecha" edges="norte_a_centro centro_a_este"/>
+    <route id="norte_ruta_izquierda" edges="norte_a_centro centro_a_oeste"/>
+    <route id="norte_ruta_central" edges="norte_a_centro centro_a_sur"/>
+
+    <flow id="norte_flujo_derecha" type="mezcla" route="norte_ruta_derecha" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="norte_flujo_izquierda" type="mezcla" route="norte_ruta_izquierda" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="norte_flujo_central" type="mezcla" route="norte_ruta_central" begin="0" end="3600" number="150" departLane="random"/>
+
+    <!-- Flujo desde el este -->
+    <route id="este_ruta_derecha" edges="este_a_centro centro_a_norte"/>
+    <route id="este_ruta_izquierda" edges="este_a_centro centro_a_oeste"/>
+    <route id="este_ruta_central" edges="este_a_centro centro_a_sur"/>
+
+    <flow id="este_flujo_derecha" type="mezcla" route="este_ruta_derecha" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="este_flujo_izquierda" type="mezcla" route="este_ruta_izquierda" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="este_flujo_central" type="mezcla" route="este_ruta_central" begin="0" end="3600" number="150" departLane="random"/>
+
+    <!-- Flujo desde el oeste -->
+    <route id="oeste_ruta_derecha" edges="oeste_a_centro centro_a_norte"/>
+    <route id="oeste_ruta_izquierda" edges="oeste_a_centro centro_a_este"/>
+    <route id="oeste_ruta_central" edges="oeste_a_centro centro_a_sur"/>
+
+    <flow id="oeste_flujo_derecha" type="mezcla" route="oeste_ruta_derecha" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="oeste_flujo_izquierda" type="mezcla" route="oeste_ruta_izquierda" begin="0" end="3600" number="150" departLane="random"/>
+    <flow id="oeste_flujo_central" type="mezcla" route="oeste_ruta_central" begin="0" end="3600" number="150" departLane="random"/>
+
+</routes>

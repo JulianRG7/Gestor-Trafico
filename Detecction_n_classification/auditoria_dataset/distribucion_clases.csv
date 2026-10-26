@@ -1,0 +1,8 @@
+class_id,class_name,objects
+0,Car,1849
+1,Motorcycle,1819
+2,Passenger,1875
+3,Cargo,2012
+4,Ambulance,1744
+5,Police,1803
+6,FireTruck,1812

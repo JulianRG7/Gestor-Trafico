@@ -1,0 +1,14 @@
+Mira 
+E0_0 va a E1_0 y E2_0, 
+E0_1 va a E2_0, E2_1
+E0_2 va a  E2_0, E2_1
+
+-E1_0 va a E2_0, E4_0, E4_1
+-E1_1 va a  E4_0, E4_1, , E6_2
+
+E3_2 va a E6_2, E6_1
+E3_1 va a E6_1, E6_0
+E3_0 va a E6_0, E4_1, E4_0
+
+E5_0 va a E6_0, E6_1
+E5_1 va a E2_1, E2_0

@@ -1,0 +1,212 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\assets\\scripts\\dataset\\yolodatasetgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\dataset\\yolodatasetgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|c:\\users\\esteban_julian\\documents\\ug\\semeste_8vo\\sumo2unity-main\\assets\\_project\\scripts\\integrationscripts\\vehiclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|solutionrelative:assets\\_project\\scripts\\integrationscripts\\vehiclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Library\\PackageCache\\com.unity.render-pipelines.high-definition@1af19dc82e07\\Runtime\\Material\\Lit\\Lit.shader||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Library\\PackageCache\\com.unity.render-pipelines.high-definition@1af19dc82e07\\Runtime\\Material\\Lit\\Lit.shader||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\assets\\scripts\\dataset\\yoloboundingboxutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\dataset\\yoloboundingboxutility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\assets\\_project\\scripts\\integrationscripts\\simulationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|solutionrelative:assets\\_project\\scripts\\integrationscripts\\simulationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\assets\\scripts\\dataset\\vehiclegroundtruth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\dataset\\vehiclegroundtruth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\assets\\scripts\\dataset\\vehicletype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\dataset\\vehicletype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\VehicleType.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\_Project\\Scripts\\Dataset\\VehicleType.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\_Project\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\assets\\scripts\\dataset\\boundingboxvisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75E220A8-DBC6-5A6F-C21C-C8B021667B5B}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\dataset\\boundingboxvisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\VehicleGroundTruth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\_Project\\Scripts\\Dataset\\VehicleGroundTruth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\BoundingBoxVisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\_Project\\Scripts\\Dataset\\BoundingBoxVisualizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VehicleController.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\IntegrationScripts\\VehicleController.cs",
+              "RelativeDocumentMoniker": "Assets\\_Project\\Scripts\\IntegrationScripts\\VehicleController.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\IntegrationScripts\\VehicleController.cs",
+              "RelativeToolTip": "Assets\\_Project\\Scripts\\IntegrationScripts\\VehicleController.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAwK0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-24T04:34:24.027Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Lit.shader",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Library\\PackageCache\\com.unity.render-pipelines.high-definition@1af19dc82e07\\Runtime\\Material\\Lit\\Lit.shader",
+              "RelativeDocumentMoniker": "Library\\PackageCache\\com.unity.render-pipelines.high-definition@1af19dc82e07\\Runtime\\Material\\Lit\\Lit.shader",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Library\\PackageCache\\com.unity.render-pipelines.high-definition@1af19dc82e07\\Runtime\\Material\\Lit\\Lit.shader",
+              "RelativeToolTip": "Library\\PackageCache\\com.unity.render-pipelines.high-definition@1af19dc82e07\\Runtime\\Material\\Lit\\Lit.shader",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002777|",
+              "WhenOpened": "2026-08-21T02:41:17.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SimulationController.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\IntegrationScripts\\SimulationController.cs",
+              "RelativeDocumentMoniker": "Assets\\_Project\\Scripts\\IntegrationScripts\\SimulationController.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\IntegrationScripts\\SimulationController.cs",
+              "RelativeToolTip": "Assets\\_Project\\Scripts\\IntegrationScripts\\SimulationController.cs",
+              "ViewState": "AgIAANsBAAAAAAAAAAAswN8BAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-20T03:32:59.085Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "VehicleType.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\VehicleType.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Dataset\\VehicleType.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\VehicleType.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Dataset\\VehicleType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-20T02:23:39.531Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "YoloDatasetGenerator.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\YoloDatasetGenerator.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Dataset\\YoloDatasetGenerator.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\YoloDatasetGenerator.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Dataset\\YoloDatasetGenerator.cs",
+              "ViewState": "AgIAAHICAAAAAAAAAAAgwHwCAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T23:42:19.007Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "VehicleGroundTruth.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T23:41:42.795Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "BoundingBoxVisualizer.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "ViewState": "AgIAAIUAAAAAAAAAAAAAAAUAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T23:40:58.812Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "YoloBoundingBoxUtility.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAmwA0AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T23:40:01.927Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "YoloBoundingBoxUtility.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "RelativeDocumentMoniker": "Assets\\_Project\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "RelativeToolTip": "Assets\\_Project\\Scripts\\Dataset\\YoloBoundingBoxUtility.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T09:21:26.629Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "VehicleType.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\VehicleType.cs",
+              "RelativeDocumentMoniker": "Assets\\_Project\\Scripts\\Dataset\\VehicleType.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\VehicleType.cs",
+              "RelativeToolTip": "Assets\\_Project\\Scripts\\Dataset\\VehicleType.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T09:21:20.995Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "VehicleGroundTruth.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "RelativeDocumentMoniker": "Assets\\_Project\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "RelativeToolTip": "Assets\\_Project\\Scripts\\Dataset\\VehicleGroundTruth.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T09:21:15.846Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "BoundingBoxVisualizer.cs",
+              "DocumentMoniker": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "RelativeDocumentMoniker": "Assets\\_Project\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "ToolTip": "C:\\Users\\Esteban_Julian\\Documents\\UG\\Semeste_8vo\\SUMO2Unity-main\\Assets\\_Project\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "RelativeToolTip": "Assets\\_Project\\Scripts\\Dataset\\BoundingBoxVisualizer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T09:21:09.598Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

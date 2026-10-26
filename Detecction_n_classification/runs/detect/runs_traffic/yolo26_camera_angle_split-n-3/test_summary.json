@@ -1,0 +1,18 @@
+{
+  "model": "yolo26n.pt",
+  "epochs": 110,
+  "imgsz": 960,
+  "batch": -1,
+  "best_weights": "/home/julianrgx/Escritorio/UG/LIDIA_8vo_Semestre/Proyecto_Integrador/runs/detect/runs_traffic/yolo26_camera_angle_split-n-3/weights/best.pt",
+  "test_mAP50": 0.3625330126843501,
+  "test_mAP50_95": 0.3224391435367236,
+  "test_per_class_mAP50_95": {
+    "Car": 0.3250275403079373,
+    "Motorcycle": 0.26271936871236357,
+    "Passenger": 0.3425195791922197,
+    "Cargo": 0.3345283882432663,
+    "Ambulance": 0.34523502302781695,
+    "Police": 0.3247211347790798,
+    "FireTruck": 0.32232297049438147
+  }
+}

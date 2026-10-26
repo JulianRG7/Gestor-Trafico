@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-03-02 02:28:30 by Eclipse SUMO netedit Version 1.19.0
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <!-- Shapes -->
+    <poly id="po_0" type="Residential" color="83,84,87" fill="0" layer="0.00" shape="-145.288789,147.691264 -145.925137,14.694563 -12.928435,12.785519 -14.201131,148.327612 -144.652441,147.691264"/>
+    <poly id="po_1" type="Terrain" color="83,84,87" fill="0" layer="0.00" shape="-158.015746,161.054569 160.158181,162.963612 161.430877,-150.119532 -163.106529,-155.210314 -158.015746,159.781873"/>
+    <poly id="po_2" type="Residential" color="83,84,87" fill="0" layer="0.00" shape="9.343740,-12.668395 11.889131,-145.665097 148.703920,-138.665270 146.158528,-19.668222 9.980088,-13.941091"/>
+</additional>

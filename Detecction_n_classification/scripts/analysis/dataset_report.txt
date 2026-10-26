@@ -1,0 +1,26 @@
+DATASET ANALYSIS REPORT
+======================================================================
+
+Dataset: /home/julianrgx/Escritorio/UG/LIDIA_8vo_Semestre/Proyecto_Integrador/VehicleClassificationDataset
+Classes: 10
+Valid images: 20562
+Corrupted images: 0
+
+IMAGES PER CLASS
+----------------------------------------------------------------------
+Ambulance                      1794 images
+Ambulance-no-emergency         949 images
+Car                            2999 images
+Cargo                          3173 images
+FireTruck                      1710 images
+FireTruck-no-emergency         1103 images
+Motorcycle                     3053 images
+Passenger                      2901 images
+Police                         1871 images
+Police-no-emergency            1009 images
+
+GLOBAL STATISTICS
+----------------------------------------------------------------------
+Width: 15 - 694 (mean=154.38, median=128.00)
+Height: 1 - 593 (mean=182.83, median=160.00)
+Aspect ratio: 0.2548 - 183.0000 (mean=1.0873, median=0.8085)
