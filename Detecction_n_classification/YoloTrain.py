@@ -34,16 +34,16 @@ DATASET_YAML = Path("dataset_split/dataset.yaml")
 # exprimir precisión, o baja a "n" si necesitas iterar rápido.
 MODEL = "yolo26n.pt"
 
-EPOCHS = 20
-CLOSE_MOSAIC = 5    # (default)
+EPOCHS = 50
+CLOSE_MOSAIC = 20    # (default)
 IMG_SIZE = 960       # las imágenes fuente son 1920x1080; 640 (default de
                       # Ultralytics) recorta detalle en vehículos lejanos
                       # o pequeños (ej. motos). 960-1280 suele ir mejor
                       # a cambio de más VRAM/tiempo por época.
 BATCH = -1
-PATIENCE = 10        # early stopping: épocas sin mejora antes de parar
+PATIENCE = 30        # early stopping: épocas sin mejora antes de parar
 PROJECT = "runs_traffic"
-RUN_NAME = "yolo26_camera_angle_split-n2"
+RUN_NAME = "yolo26_camera_angle_split-n3"
 SEED = 7
 
 

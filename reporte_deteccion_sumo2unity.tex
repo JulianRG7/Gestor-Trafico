@@ -1,0 +1,288 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+
+% Código en línea (permite cortes de línea en nombres largos)
+\DeclareUrlCommand\code{\urlstyle{tt}}
+\sloppy
+
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{Reporte: Construcción y preparación del dataset de detección SUMO2Unity}
+\author{José Julián Rodríguez}
+\date{26 de octubre de 2026}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================
+\section{Introducción}
+
+El dataset de detección de este proyecto es sintético: se genera dentro de una co-simulación SUMO2Unity, donde SUMO controla las trayectorias de los vehículos y Unity (HDRP) los renderiza en 3D. Cada captura produce una imagen PNG de 1920$\times$1080 y un archivo de etiquetas en formato YOLO con la clase y la caja de cada vehículo visible, de modo que la anotación es automática y no requiere etiquetado humano.
+
+Las siete clases son Car, Motorcycle, Passenger, Cargo, Ambulance, Police y FireTruck. El conjunto actual reúne siete fuentes, una por cámara o configuración de cámara; las seis que entran en la partición suman unas 4960 imágenes y unos 38\,000 vehículos etiquetados. Con él se entrena un detector YOLO26 de Ultralytics.
+
+El flujo tiene cinco etapas, que este reporte analiza en orden: generación en Unity, corrección y limpieza de las etiquetas imagen por imagen, preprocesamiento, definición de regiones de interés (ROI) y partición estratificada. Cada sección describe qué hace el código, por qué se diseñó así y qué riesgos conviene tener presentes.
+
+% ============================================================
+\section{Generación del dataset en Unity (C\#)}
+
+La generación descansa en cinco scripts de \code{Assets/Scripts/Dataset}. El centro es \code{YoloDatasetGenerator.cs}, que captura una imagen cada cierto intervalo y escribe sus etiquetas; los otros cuatro le dan soporte: definir la clase de cada vehículo, calcular su caja 2D y visualizarla para depurar.
+
+\subsection{Identidad y clase de cada vehículo}
+
+\code{VehicleType.cs} define un \code{enum} con siete clases cuyo valor entero es directamente el \code{class_id} de YOLO: Car (0), Motorcycle (1), Passenger (2), Cargo (3), Ambulance (4), Police (5) y FireTruck (6). \code{VehicleGroundTruth.cs} es el componente que se agrega a cada prefab de vehículo; guarda su tipo y un identificador, y mantiene una lista estática \code{AllVehicles} a la que cada vehículo se suscribe en \code{OnEnable} y de la que sale en \code{OnDisable}. Este registro evita llamar a \code{FindObjectsByType} en cada captura, una búsqueda $O(N)$ sobre toda la escena que se vuelve costosa cuando SUMO genera muchos vehículos. El componente también cachea sus \code{Renderer} hijos para no recorrer la jerarquía repetidamente.
+
+\subsection{Cálculo de la caja delimitadora}
+
+\code{YoloBoundingBoxUtility.cs} convierte un objeto 3D en una caja 2D normalizada. Primero une los \code{bounds} de todos los renderers del vehículo en un solo volumen alineado a los ejes del mundo (AABB). Luego proyecta sus ocho esquinas con \code{Camera.WorldToViewportPoint}, descarta las que quedan detrás de la cámara ($z \le 0$) y toma el mínimo y el máximo en $x$ e $y$. Las coordenadas se recortan al rango $[0, 1]$ con \code{Clamp01} y, si la caja resultante tiene ancho o alto nulo, el vehículo se descarta. Finalmente \code{ToYoloString} escribe la línea \code{class_id x_centro y_centro ancho alto} con seis decimales y \code{CultureInfo.InvariantCulture}. Esto último es importante en un Windows en español, donde de otro modo el separador decimal sería una coma y YOLO no podría leer el archivo.
+
+Este método tiene dos consecuencias que explican buena parte de la limpieza posterior. La primera es que una AABB proyectada siempre es más grande que la silueta real del vehículo, y la diferencia crece cuando el vehículo está girado respecto a los ejes del mundo o se ve en perspectiva oblicua; por eso aparecen cajas holgadas con mucho asfalto alrededor. La segunda es que el espacio \emph{viewport} de Unity tiene el origen abajo a la izquierda ($y = 0$ abajo), mientras que YOLO espera $y = 0$ arriba. El generador escribe la coordenada $y$ tal como sale de Unity, sin invertirla, así que las etiquetas crudas no son YOLO estándar.
+
+\subsection{Captura de la imagen}
+
+\code{YoloDatasetGenerator} crea un \code{RenderTexture} ARGB32 de 1920$\times$1080 con buffer de profundidad de 24 bits, fija la relación de aspecto de la cámara y lanza una corrutina. En cada iteración espera \code{WaitForEndOfFrame}, renderiza la cámara sobre la textura, lee los píxeles con \code{ReadPixels} a un \code{Texture2D} RGB24 y los codifica a PNG; después restaura el \code{targetTexture} original para no alterar la vista del editor. Las imágenes se guardan como \code{image_000000.png} en \code{images/} y su etiqueta con el mismo nombre en \code{labels/}. El número de imágenes (100 por defecto) y el intervalo entre capturas (1~s) se configuran en el inspector; el intervalo es lo que hace que dos imágenes consecutivas no sean idénticas, porque el tráfico avanza entre una y otra.
+
+\subsection{Filtro de oclusión}
+
+Antes de escribir la etiqueta de un vehículo, el generador estima qué fracción de él es visible. \code{GenerateSamplePoints} toma puntos sobre su volumen: el centro y las ocho esquinas (9 puntos por defecto), y opcionalmente centros de caras y puntos medios de aristas hasta 27. Por cada punto, \code{IsPointVisible} lanza un \code{Physics.RaycastAll} desde la cámara, ordena los impactos por distancia y revisa el primero: si pertenece al propio vehículo (o a un hijo), el punto es visible; si es otro objeto, está ocluido. La visibilidad es el cociente de puntos visibles entre puntos muestreados,
+\[
+v = \frac{\text{puntos visibles}}{\text{puntos muestreados}},
+\]
+y el vehículo solo se etiqueta si $v \ge 0{,}30$ (\code{minimumVisibility}).
+
+El filtro es razonable pero aproximado. Los puntos se muestrean en las esquinas de la AABB, que a menudo caen en el aire fuera de la carrocería, así que un rayo puede atravesar el espacio vacío y no tocar nada (se cuenta como visible) o golpear un objeto que está detrás. Además, el raycast depende de que vehículos, edificios y árboles tengan \code{Collider}; un objeto sin collider no ocluye aunque tape el vehículo en la imagen. El cambio a \code{QueryTriggerInteraction.Collide} hace que también cuenten los colliders tipo \emph{trigger}. Estas aproximaciones producen cajas de vehículos casi tapados o muy lejanos, que fueron el objetivo principal de la limpieza manual.
+
+\subsection{Verificación visual}
+
+\code{BoundingBoxVisualizer.cs} dibuja en \code{OnGUI} las cajas en rojo y el nombre de la clase directamente sobre la vista del juego, invirtiendo $y$ con \code{(1 - yMax)} porque la GUI de Unity tiene el origen arriba. Fuera de Unity, \code{boundingbox_revision.py} hace lo mismo sobre una imagen ya guardada y genera archivos como \code{image_000230_bbox.jpg}, que sirven para comprobar que las etiquetas coinciden con los vehículos.
+
+\subsection{Escenarios capturados}
+
+El dataset no proviene de una sola cámara. El generador se ejecutó varias veces con cámaras y ángulos distintos, y cada ejecución produjo su propia carpeta. La tabla~\ref{tab:fuentes} resume las siete fuentes que existen hoy.
+
+\begin{table}[H]
+\centering
+\caption{Fuentes del dataset de detección. Los objetos se calculan a partir del tamaño de los archivos de etiquetas (38~bytes por línea).}
+\label{tab:fuentes}
+\begin{tabular}{lrr}
+\toprule
+Fuente & Imágenes & Objetos \\
+\midrule
+\code{YOLODataset} & 1056 & 7563 \\
+\code{YOLODataset-Camera_Free-11} & 1053 & 7961 \\
+\code{YOLODataset-Camera_Free-V1} & 916 & 8166 \\
+\code{YOLODataset-Camera_Free2} & 895 & 9632 \\
+\code{YOLODataset-Camera_Free3-L-V1} & $\approx$636 & $\approx$2640 \\
+\code{YOLODataset-Camera_Free3-L-V2} & $\approx$403 & $\approx$2198 \\
+\code{YOLODataset-Camera_Free2-V2} & $\approx$53 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Las cifras de \code{Camera_Free3-L-V1} y \code{Camera_Free3-L-V2} vienen de la última auditoría (sección~\ref{sec:auditoria}), porque sus carpetas no se pudieron contar directamente; son coherentes con el tamaño del último split. \code{Camera_Free2-V2} tiene ROI definida pero \code{split.py} no la incluye en sus fuentes. La diversidad de puntos de vista es valiosa para generalizar, pero, como se verá en la partición, varias de estas fuentes son en realidad la misma calle vista desde una cámara casi igual.
+
+% ============================================================
+\section{Corrección y limpieza de las etiquetas}
+
+\subsection{Corrección del eje Y (\texorpdfstring{\texttt{yoloCorrection.py}}{yoloCorrection.py})}
+
+Como el generador guarda $y$ en convención de Unity, el primer paso es convertir las etiquetas a YOLO estándar. \code{yoloCorrection.py} recorre los \code{.txt} de las carpetas indicadas, conserva solo las líneas con cinco campos y aplica
+\[
+y_{\text{centro}}' = 1 - y_{\text{centro}},
+\]
+dejando $x$, el ancho y el alto intactos, y reescribe cada archivo con seis decimales. Como la transformación es su propia inversa, aplicarla dos veces devuelve la etiqueta original invertida, y ese es el riesgo principal del script: no registra qué carpetas ya fueron corregidas. En la versión actual el script apunta a \code{YOLODataset (Copiar)}, una copia de trabajo, lo que es una buena práctica porque protege los originales mientras se prueba la corrección.
+
+La regla que se deriva de esto es que, a partir de este paso, todas las herramientas deben trabajar en convención YOLO estándar. El revisor principal y \code{split.py} ya lo hacen. \code{boundingbox_revision.py}, en cambio, sigue invirtiendo $y$ al dibujar, así que solo es válido sobre etiquetas crudas de Unity.
+
+\subsection{Revisión imagen por imagen (\texorpdfstring{\texttt{ClearVehiclesDataset.py}}{ClearVehiclesDataset.py})}
+
+La limpieza fue manual y supervisada: cada imagen se revisó a ojo con una herramienta gráfica hecha en Tkinter, porque los errores del generador (cajas holgadas, vehículos casi ocultos que pasaron el filtro de oclusión, etiquetas de vehículos lejanos de pocos píxeles) no se pueden detectar con una regla simple.
+
+Al elegir una carpeta, la herramienta detecta si tiene la estructura \code{images/} + \code{labels/} o si imágenes y etiquetas están juntas, carga la imagen escalada al lienzo y dibuja sus cajas con el nombre de la clase. Sobre esa vista el revisor puede corregir de forma completa: hacer clic en una caja para seleccionarla, arrastrarla para moverla, dibujar una nueva arrastrando en una zona vacía, cambiar su clase con los botones de radio del panel derecho y borrarla con Supr. Las cajas de menos de 5 píxeles se descartan al soltar el ratón para evitar clics accidentales, y la opción ``Ocultar inactivos al editar'' aísla la caja seleccionada cuando hay muchos vehículos superpuestos.
+
+La navegación con las flechas guarda automáticamente el \code{.txt} antes de cambiar de imagen, así que la revisión es un recorrido continuo sin pasos de guardado manuales. Si una imagen se queda sin cajas, su \code{.txt} se elimina; y si la imagen entera no sirve (por ejemplo, porque la cámara quedó tapada o no hay vehículos útiles) se borra junto con su etiqueta, previa confirmación. El efecto de esta revisión se ve en la numeración de las carpetas: la de \code{Camera_Free3-L-V1}, por ejemplo, salta de \code{image_000001} a \code{image_000004}, \code{image_000005}, \code{image_000006}, \code{image_000007}, \code{image_000009}, etc., porque las capturas descartadas se eliminaron del disco.
+
+\subsection{Auditoría automática (\texorpdfstring{\texttt{DatasetRevision.py}}{DatasetRevision.py})}
+\label{sec:auditoria}
+
+Después de la limpieza manual se auditó el dataset de forma programática. Por cada imagen el script registra resolución, formato, hash SHA-256 y hash perceptual (pHash), y valida su etiqueta línea por línea: cinco valores, \code{class_id} dentro de las siete clases, centro en $[0, 1]$ y ancho y alto en $(0, 1]$. Después busca duplicados exactos por SHA-256, pares casi idénticos por distancia de Hamming entre pHash (umbral 5) y pares parecidos entre fuentes distintas, que señalan una posible fuga de información.
+
+La auditoría disponible se ejecutó sobre cuatro de las siete fuentes, antes de los últimos cambios en las etiquetas, así que conviene repetirla sobre las siete. Sus resultados son los de la tabla~\ref{tab:auditoria}.
+
+\begin{table}[H]
+\centering
+\caption{Resultado de la auditoría por fuente.}
+\label{tab:auditoria}
+\begin{tabular}{lrrr}
+\toprule
+Fuente & Imágenes & Objetos & Etiquetas con error \\
+\midrule
+\code{YOLODataset} & 1057 & 7470 & 7 \\
+\code{YOLODataset-Camera_Free-V1} & 916 & 8026 & 3 \\
+\code{YOLODataset-Camera_Free3-L-V1} & 636 & 2640 & 0 \\
+\code{YOLODataset-Camera_Free3-L-V2} & 403 & 2198 & 1 \\
+\midrule
+\textbf{Total} & \textbf{3012} & \textbf{20\,334} & \textbf{11} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Los resultados confirman que la limpieza dejó un conjunto consistente: las 3012 imágenes tienen 1920$\times$1080 y su etiqueta, no hay duplicados exactos y solo 11 etiquetas presentan algún error de formato o rango. En promedio hay 6,75 vehículos por imagen (mediana 7, máximo 20).
+
+Lo que sí apareció es mucha redundancia visual. La auditoría encontró 27\,274 pares casi idénticos (225 con distancia 0), casi todos dentro de la misma fuente, algo esperable cuando la cámara está fija y las capturas se separan un segundo. También encontró 1949 pares parecidos entre fuentes distintas: 1896 entre \code{Camera_Free3-L-V1} y \code{YOLODataset}, y 53 entre \code{Camera_Free3-L-V2} y \code{YOLODataset}. Como se ve en la sección~\ref{sec:roi}, las ROI de esas tres fuentes son casi idénticas: miran la misma calle. Este hallazgo es el que motiva la partición por grupos que se recomienda al final.
+
+Una observación sobre \code{distribucion_clases.csv}: el script guarda las clases de cada imagen como un conjunto sin repetidos, así que ese archivo cuenta en cuántas imágenes aparece cada clase (de 1744 a 2012), no cuántos vehículos hay. Por eso suma 12\,714 y no los 20\,334 objetos reales. Para reportar el balance por objeto conviene contar \code{class_id} antes de aplicar el \code{set}.
+
+% ============================================================
+\section{Preprocesamiento}
+
+El detector no recibe las capturas tal cual. Antes de entrenar, cada imagen pasa por tres transformaciones: la conversión de etiquetas a convención YOLO (sección anterior), el enmascarado por ROI con el filtrado de cajas que la acompaña (sección~\ref{sec:roi}) y una validación final de cada línea. Durante el entrenamiento, Ultralytics redimensiona y aumenta los datos al vuelo.
+
+\subsection{Validación de etiquetas en el split}
+
+Al escribir el dataset final, \code{clean_label_lines} vuelve a validar cada línea: exige cinco campos numéricos, una clase existente, centro en $[0, 1]$ y ancho y alto en $(0, 1]$. Las líneas que no cumplen se descartan y se cuentan junto con las eliminadas por la ROI. Así, aunque una etiqueta defectuosa sobreviva a la limpieza manual, nunca llega al entrenamiento.
+
+\subsection{Tamaño de entrada y aumento de datos}
+
+No se redimensiona en disco. \code{YoloTrain.py} entrena con \code{imgsz=960} en lugar del 640 por defecto, porque reducir 1920$\times$1080 a 640 hace que las motos lejanas queden en pocos píxeles. El aumento de datos se ajustó al escenario de cámaras fijas, y la tabla~\ref{tab:aug} resume la configuración del último entrenamiento (\code{yolo26_camera_angle_split-n3-2}).
+
+\begin{table}[H]
+\centering
+\caption{Configuración de entrenamiento y aumento de datos.}
+\label{tab:aug}
+\begin{tabular}{llp{7.5cm}}
+\toprule
+Parámetro & Valor & Justificación \\
+\midrule
+Modelo & \code{yolo26n.pt} & Versión nano, rápida para iterar \\
+Épocas / paciencia & 50 / 30 & Parada temprana tras 30 épocas sin mejora \\
+Optimizador & AdamW, $\text{lr}_0 = 0{,}001$ & Tasa más baja que la de SGD \\
+\code{degrees}, \code{shear} & 0 & Las cámaras están fijas, no hay rotación real \\
+\code{flipud} / \code{fliplr} & 0 / 0,5 & Un vehículo invertido no existe; el espejo horizontal sí \\
+\code{scale} & 0,5 & Variedad de tamaño aparente (cerca y lejos) \\
+\code{hsv_v} & 0,5 & Cubre cambios de iluminación \\
+\code{perspective} & 0,0003 & Variación leve del ángulo de cámara \\
+\code{mosaic} / \code{close_mosaic} & 1,0 / 20 & Mosaico desactivado en las 20 últimas épocas \\
+\code{mixup} & 0,1 & Regularización para un dataset pequeño \\
+\code{copy_paste} & 0,1 (modo \code{flip}) & Multiplica las clases raras en contexto \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Frente a versiones anteriores del script, los cambios principales son más épocas (de 20 a 50), un \code{close_mosaic} mayor (de 5 a 20) para que el modelo termine de ajustarse sobre imágenes sin mosaico, y la incorporación de \code{mixup} y \code{copy_paste}, que tienen sentido cuando algunas clases aparecen poco. Hay un detalle con \code{copy_paste}: en Ultralytics funciona a partir de máscaras de segmentación, y con etiquetas que solo tienen cajas puede no tener efecto. Conviene comprobarlo en las imágenes \code{train_batch*.jpg} del entrenamiento.
+
+% ============================================================
+\section{Creación de la región de interés (ROI)}
+\label{sec:roi}
+
+Cada cámara tiene un polígono que delimita la calzada útil, y todo lo que queda fuera se borra de la imagen y de las etiquetas antes de entrenar. La razón es que los vehículos lejanos, en el horizonte o en calles transversales salen en la etiqueta pero ocupan pocos píxeles o están parcialmente tapados; pedirle al detector que los encuentre le enseña a disparar sobre ruido. La ROI reduce el problema a la zona donde la detección es fiable y relevante para el análisis de tráfico.
+
+\subsection{Definición interactiva (\texorpdfstring{\texttt{roisCreation.py}}{roisCreation.py})}
+
+El script abre con OpenCV la primera imagen de cada una de las siete fuentes y deja dibujar el polígono con clics: cada clic agrega un vértice, el contorno se redibuja en verde en tiempo real, \code{c} limpia los puntos, \code{s} guarda (exige al menos 3 vértices) y \code{q} cancela. Basta una imagen por fuente porque cada carpeta corresponde a una cámara fija, así que la calzada está en el mismo lugar en todas sus capturas. Los vértices se dividen entre el ancho y el alto de la imagen para guardarlos normalizados en \code{rois.json}, con lo que el polígono es independiente de la resolución y queda en el mismo sistema de coordenadas que las etiquetas YOLO (origen arriba a la izquierda).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figuras/rois.png}
+\caption{ROI de cada cámara sobre el encuadre de 1920$\times$1080. En azul, la zona que se conserva; en negro, la que se enmascara. Debajo de cada nombre, el número de vértices y el porcentaje de la imagen dentro de la ROI.}
+\label{fig:rois}
+\end{figure}
+
+Los polígonos son trapecios o pentágonos que siguen la perspectiva de la vía: estrechos arriba, en el horizonte, y anchos abajo, cerca de la cámara. Casi todos tocan los bordes superior e inferior de la imagen. Según la cámara, la ROI conserva entre el 18\,\% y el 48\,\% del encuadre, lo que muestra cuánto era fondo (edificios, aceras, cielo) en las cámaras centradas en una sola calle.
+
+La figura~\ref{fig:rois} también revela algo sobre las fuentes. Las ROI de \code{Camera_Free3-L-V1}, \code{Camera_Free3-L-V2} y \code{YOLODataset} son prácticamente la misma diagonal, y las de \code{Camera_Free2} y \code{Camera_Free2-V2} son casi idénticas entre sí. En la práctica hay cuatro puntos de vista distintos, no siete, lo que coincide con los pares parecidos entre fuentes que encontró la auditoría.
+
+\subsection{Aplicación de la ROI (\texorpdfstring{\texttt{split.py}}{split.py})}
+
+La ROI se aplica al mismo tiempo que la partición, sobre la imagen y sobre las etiquetas. En la imagen, \code{place_image} rasteriza el polígono con \code{cv2.fillPoly} y aplica \code{bitwise_and}, dejando en negro todo lo exterior. Así YOLO nunca ve vehículos sin etiqueta fuera de la ROI, que de otro modo contarían como falsos positivos durante el entrenamiento.
+
+En las etiquetas, \code{is_box_in_roi} usa Shapely para construir el polígono de la caja $B$ y el de la ROI $R$ (reparándolo con \code{buffer(0)} si se dibujó cruzado) y calcula qué fracción del área de la caja cae dentro:
+\[
+r = \frac{\text{área}(B \cap R)}{\text{área}(B)} .
+\]
+La caja se conserva solo si $r \ge 0{,}90$ (\code{MIN_BBOX_INTERSECTION}). El umbral alto es intencional: una caja que queda a medias en el borde correspondería a un vehículo cortado por la máscara negra, y es mejor no enseñarle al detector a buscar medio vehículo. Las líneas descartadas se cuentan y se reportan al final de la ejecución.
+
+Hay una zona gris que conviene conocer. Un vehículo que está entre el 1\,\% y el 89\,\% dentro de la ROI pierde su etiqueta, pero la parte que queda dentro sigue visible en la imagen enmascarada. Para el detector eso es un trozo de vehículo sin anotar, es decir, un ejemplo negativo. Con un umbral de 90\,\% estos casos son pocos y están en el borde, pero si se quisiera eliminarlos del todo podría pintarse de negro también el área de esas cajas descartadas.
+
+Tanto la ROI como el filtrado asumen que las etiquetas ya están en convención YOLO estándar. Si una fuente conservara $y$ invertida, sus cajas se compararían con un polígono reflejado verticalmente y se descartarían casi todas. Un conteo de líneas descartadas inusualmente alto en una fuente es la señal de este problema. En el split actual hay 17 etiquetas vacías entre validación y prueba, que corresponden a imágenes cuyas cajas quedaron todas fuera de la ROI.
+
+% ============================================================
+\section{Partición estratificada}
+
+\subsection{Estratificación iterativa multietiqueta}
+
+Una imagen de tráfico puede tener a la vez coches, motos y una ambulancia, así que no existe un único valor de \code{stratify} que la represente y la estratificación clásica no sirve. Por eso \code{iterative_stratified_split} implementa una versión del algoritmo de estratificación iterativa (Sechidis et al., 2011). Primero, para cada imagen se calcula el conjunto de clases presentes después de filtrar por ROI, de modo que se estratifica sobre lo que el modelo realmente verá. Luego se fija para cada clase cuántas imágenes debería recibir cada lado según la proporción objetivo.
+
+El reparto avanza clase por clase empezando por la más escasa entre las imágenes que faltan por asignar. Todas las imágenes que contienen esa clase se reparten una a una al lado con mayor déficit respecto a su meta para esa clase; en empate gana el subconjunto con menos imágenes. Al asignar una imagen se actualizan los contadores de todas sus clases, no solo de la que se está repartiendo. Empezar por la clase rara es lo que hace funcionar el método: sus pocas imágenes se reparten primero, cuando aún hay libertad, y las clases abundantes absorben después el desajuste. Las imágenes que quedaron sin ninguna caja se reparten al final alternando para equilibrar tamaños.
+
+El procedimiento se aplica dos veces con semilla 42: primero 80\,\% para entrenamiento y 20\,\% temporal, y después el temporal se divide 50/50 en validación y prueba, lo que da 80/10/10. Las seis fuentes listadas en \code{split.py} se unen en un solo conjunto antes de dividir, y cada archivo se renombra como \code{<fuente>__<imagen>} para evitar colisiones, ya que todas las fuentes reutilizan nombres como \code{image_000001}. El resultado se escribe en \code{dataset_split/{train,val,test}/{images,labels}} junto con un \code{dataset.yaml} con las siete clases, que es lo que consume \code{YoloTrain.py}.
+
+Una limitación del criterio es que estratifica sobre presencia de clase por imagen, no sobre número de vehículos. Una imagen con diez coches cuenta igual que una con uno, así que el balance de objetos por subconjunto puede desviarse algo del 80/10/10 aunque el de imágenes se cumpla.
+
+\subsection{Archivos residuales en \texorpdfstring{\texttt{dataset\_split}}{dataset\_split}}
+
+Al revisar la carpeta \code{dataset_split} apareció un problema que afecta directamente a las métricas. \code{split.py} crea las carpetas de salida pero nunca las vacía, así que cada ejecución escribe encima de la anterior y los archivos que ya no corresponden se quedan. En la carpeta actual conviven dos generaciones de archivos, una de una ejecución anterior y otra de la última.
+
+Las consecuencias se ven en la tabla~\ref{tab:residuos}. Validación tiene 978 etiquetas y prueba 944, cuando con unas 4960 imágenes y un 10\,\% para cada una deberían ser cerca de 495. Hay 102 imágenes que están a la vez en validación y en prueba, y al menos 342 que están en entrenamiento y en validación (el conteo de entrenamiento está limitado a los primeros 2000 archivos, así que el número real puede ser mayor). Además aparecen 6 imágenes de \code{Camera_Free2-V2}, una fuente que la versión actual de \code{split.py} no incluye.
+
+\begin{table}[H]
+\centering
+\caption{Estado de \texorpdfstring{\texttt{dataset\_split}}{dataset\_split} al revisar la carpeta.}
+\label{tab:residuos}
+\begin{tabular}{lrrr}
+\toprule
+Subconjunto & Etiquetas & De la última ejecución & De ejecuciones anteriores \\
+\midrule
+Validación & 978 & 504 & 474 \\
+Prueba & 944 & 487 & 457 \\
+\midrule
+Validación $\cap$ prueba & 102 & & \\
+Entrenamiento $\cap$ validación & $\ge$342 & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Los archivos de la última ejecución sí cuadran con el diseño: 504 y 487 imágenes suman 991, el 20\,\% de unas 4960. El problema es solo la acumulación. Como el último entrenamiento se lanzó después de ese split, se entrenó y evaluó con imágenes compartidas entre subconjuntos, y sus métricas de validación y prueba están infladas. La corrección es sencilla: borrar \code{dataset_split} (o llamar a \code{shutil.rmtree(OUTPUT_DIR)} al inicio de \code{split.py}), regenerarlo y volver a entrenar.
+
+\subsection{Fuga entre fuentes}
+
+Aun con la carpeta limpia, la partición es aleatoria a nivel de imagen, y ahí está su segunda debilidad. La auditoría encontró 27\,274 pares de imágenes casi idénticas y 1949 pares parecidos entre fuentes distintas. Si un par así cae uno en entrenamiento y otro en prueba, el modelo se evalúa sobre algo que prácticamente ya vio. Con capturas separadas por un segundo y cámaras fijas, esto ocurre con mucha frecuencia.
+
+La solución es estratificar por grupos. La figura~\ref{fig:rois} sugiere cuatro grupos naturales: \{\code{YOLODataset}, \code{Camera_Free3-L-V1}, \code{Camera_Free3-L-V2}\}, \{\code{Camera_Free2}, \code{Camera_Free2-V2}\}, \{\code{Camera_Free-V1}\} y \{\code{Camera_Free-11}\}. El encabezado de \code{YoloTrain.py} ya describe un \code{split_por_angulo.py} que entrena con unas fuentes y deja otra para validación y prueba; ese esquema por cámara mide la generalización a un ángulo nuevo, pero el script no está en la carpeta revisada y el \code{dataset.yaml} actual lo genera \code{split.py}. Una alternativa intermedia es dividir cada fuente en bloques de capturas consecutivas y asignar bloques completos a cada subconjunto, lo que evita la fuga temporal sin perder ninguna cámara en entrenamiento.
+
+% ============================================================
+\section{Conclusiones y recomendaciones}
+
+El flujo produce un dataset de detección consistente y trazable: unas 4960 imágenes de 1920$\times$1080 con unos 38\,000 vehículos en siete clases, generadas y anotadas automáticamente en Unity, corregidas a convención YOLO, revisadas imagen por imagen y recortadas a la calzada útil con una ROI por cámara. La generación automática resolvió el costo de anotar, y la limpieza manual corrigió lo que el generador no podía juzgar: cajas holgadas por la AABB y vehículos ocultos que pasaron el filtro de oclusión.
+
+Quedan cinco puntos que conviene atender antes de reportar resultados finales, ordenados por impacto.
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Limpiar \code{dataset_split} y reentrenar.} Es lo más urgente. La carpeta mezcla dos particiones y tiene imágenes repetidas entre entrenamiento, validación y prueba, así que las métricas del último entrenamiento no son fiables.
+  \item \textbf{Partición por grupos.} Agrupar las fuentes que comparten cámara, o asignar bloques de capturas consecutivas, evitaría que imágenes casi idénticas queden en subconjuntos distintos.
+  \item \textbf{Una sola convención para el eje Y.} Invertir $y$ una vez en \code{ToYoloString} del generador (\code{1f - box.CenterY}) haría innecesario \code{yoloCorrection.py} y eliminaría el riesgo de corregir dos veces una carpeta.
+  \item \textbf{Repetir la auditoría.} La última auditoría cubre cuatro de las siete fuentes y es anterior a los cambios recientes en las etiquetas. Conviene ejecutarla sobre las siete y contar objetos, no imágenes, en \code{distribucion_clases.csv}.
+  \item \textbf{Decidir sobre \code{Camera_Free2-V2}.} Tiene ROI definida pero no está en \code{split.py}. Si se incluye, debe ir en el mismo grupo que \code{Camera_Free2}.
+\end{enumerate}
+
+A más largo plazo, las cajas podrían ganar precisión si se calcularan a partir de los vértices de la malla o de una máscara de segmentación renderizada por Unity, en lugar de la AABB proyectada. Eso reduciría las cajas holgadas y el trabajo de limpieza manual, y además permitiría aprovechar de verdad \code{copy_paste}.
+
+\subsection*{Archivos analizados}
+
+Generación en Unity: \code{YoloDatasetGenerator.cs}, \code{YoloBoundingBoxUtility.cs}, \code{VehicleGroundTruth.cs}, \code{VehicleType.cs} y \code{BoundingBoxVisualizer.cs}. Corrección y limpieza: \code{yoloCorrection.py}, \code{ClearVehiclesDataset.py}, \code{boundingbox_revision.py} y \code{DatasetRevision.py}. ROI, partición y entrenamiento: \code{roisCreation.py}, \code{rois.json}, \code{split.py}, \code{dataset_split/dataset.yaml} y \code{YoloTrain.py}. Las cifras provienen de \code{auditoria_dataset/}, de las carpetas de cada fuente y de \code{dataset_split/}.
+
+\end{document}

@@ -3,8 +3,7 @@ import glob
 
 
 dataset_folders = [
-    "YOLODataset-Camera_Free-11-nolisto",
-    "YOLODataset-Camera_Free2-nolisto",    
+    "YOLODataset (Copiar)",
 ]
 
 total_archivos_modificados = 0
@@ -37,7 +36,7 @@ for dataset_name in dataset_folders:
                 h = float(parts[4])
                 
                 # Aplicar la corrección del eje Y invertido
-                new_y_center = 1.0 - y_center
+                new_y_center =  (1.0 - y_center)
                 
                 # Formatear la nueva línea manteniendo los 6 decimales
                 new_line = f"{class_id} {x_center:.6f} {new_y_center:.6f} {w:.6f} {h:.6f}\n"
