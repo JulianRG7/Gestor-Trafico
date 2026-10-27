@@ -14,12 +14,16 @@
 *.png
 
 # Excluir carpetas masivas de YOLO y datos
-Detecction_n_classification/YOLODataset-Camera_Free-11-nolisto/
-Detecction_n_classification/YOLODataset-Camera_Free-V1/
+
 Detecction_n_classification/YOLODataset/
-Detecction_n_classification/YOLODataset-Camera_Free2-nolisto/
+Detecction_n_classification/YOLODataset (Copiar)1/
+Detecction_n_classification/YOLODataset-Camera_Free-11/
+Detecction_n_classification/YOLODataset-Camera_Free-V1/
+Detecction_n_classification/YOLODataset-Camera_Free2/
+Detecction_n_classification/YOLODataset-Camera_Free2-V2/
 Detecction_n_classification/YOLODataset-Camera_Free3-L-V1/
 Detecction_n_classification/YOLODataset-Camera_Free3-L-V2/
+Detecction_n_classification/dataset_split/
 Detecction_n_classification/data/
 
 # Unity
